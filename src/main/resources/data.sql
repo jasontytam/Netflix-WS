@@ -1,0 +1,4 @@
+INSERT INTO NETFLIX_USER VALUES(DEFAULT,'mjordan','Michael','Jordan');
+INSERT INTO NETFLIX_USER VALUES(DEFAULT,'spippen','Scottie','Pippen');
+INSERT INTO NETFLIX_USER VALUES(DEFAULT,'drodman','Dennis','Rodman');
+
