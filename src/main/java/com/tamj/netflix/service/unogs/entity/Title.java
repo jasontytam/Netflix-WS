@@ -9,6 +9,7 @@ public abstract class Title {
 	private String year;
 	private String runtime;
 	private String poster;
+	private String netflix_id;
 	
 	public String getTitle() {
 		return title;
@@ -51,6 +52,13 @@ public abstract class Title {
 	}
 	public void setPoster(String poster) {
 		this.poster = poster;
+	}
+	
+	public String getNetflix_id() {
+		return netflix_id;
+	}
+	public void setNetflix_id(String netflix_id) {
+		this.netflix_id = netflix_id;
 	}
 	
 }

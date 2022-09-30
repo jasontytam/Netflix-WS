@@ -29,7 +29,7 @@ public class TitleSearchResult extends Title {
 		return "TitleSearchResult [img=" + img + ", imdb_id=" + imdb_id + ", top250=" + top250 + ", top250tv="
 				+ top250tv + ", title_date=" + title_date + ", getTitle()=" + getTitle() + ", getTitle_type()="
 				+ getTitle_type() + ", getSynopsis()=" + getSynopsis() + ", getRating()=" + getRating() + ", getYear()="
-				+ getYear() + ", getRuntime()=" + getRuntime() + ", getPoster()=" + getPoster() + ", getClass()="
+				+ getYear() + ", getNetflix_id()=" + getNetflix_id() + ", getRuntime()=" + getRuntime() + ", getPoster()=" + getPoster() + ", getClass()="
 				+ getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
 	}
 	
