@@ -1,6 +1,7 @@
 package com.tamj.netflix.service.unogs;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,9 +18,18 @@ import com.tamj.netflix.service.unogs.entity.TitleSearchResult;
 @Component
 public class NetflixSearchServiceImpl implements NetflixSearchService {
 	
-	private String url = "https://unogs-unogs-v1.p.rapidapi.com";
-	private String headerRapidApiKey = "476ed6fa3fmshb55edc2d69f5c9fp14e516jsnf5850b398932";
-	private String headerRapidApiHost = "unogs-unogs-v1.p.rapidapi.com";
+	private String url;
+	private String headerRapidApiKey;
+	private String headerRapidApiHost;
+	
+	public NetflixSearchServiceImpl() throws Exception {
+		Properties props = new Properties();
+		props.load(this.getClass().getClassLoader().getResourceAsStream("rapidapi.properties"));
+		
+		this.url = props.getProperty("rapid.api.url");
+		this.headerRapidApiKey = props.getProperty("rapid.api.key");
+		this.headerRapidApiHost = props.getProperty("rapid.api.host");
+	}
 	
 	@Override
 	public TitleDetail getTitleDetailById(String netflixId) {
