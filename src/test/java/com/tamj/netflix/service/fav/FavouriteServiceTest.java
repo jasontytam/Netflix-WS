@@ -3,7 +3,6 @@ package com.tamj.netflix.service.fav;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import java.util.List;
 
@@ -11,8 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -83,8 +82,9 @@ public class FavouriteServiceTest {
 	@Test
 	void test3GetFavList() {
 		List<FavMovie> favList = this.favService.getList(-1);
-		assertNotNull(favList);
-		assertEquals(favList.size(), 0);
+//		assertNotNull(favList);
+//		assertEquals(favList.size(), 0);
+		assertNull(favList);
 		
 		favList = this.favService.getList(this.testUser.getId());
 		assertNotNull(favList);
@@ -103,8 +103,9 @@ public class FavouriteServiceTest {
 		this.favService.removeFavourite(this.testUser.getId(), "1235");
 		
 		favList = this.favService.getList(this.testUser.getId());
-		assertNotNull(favList);
-		assertEquals(favList.size(), 0);
+//		assertNotNull(favList);
+//		assertEquals(favList.size(), 0);
+		assertNull(favList);
 		
 		this.userService.delete(this.testUser);
 		
