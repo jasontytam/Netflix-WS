@@ -3,6 +3,8 @@ package com.tamj.netflix.service.unogs;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,12 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import com.tamj.netflix.helper.AwsSecretMgrHelper;
 import com.tamj.netflix.service.unogs.entity.SearchResult;
 import com.tamj.netflix.service.unogs.entity.TitleDetail;
 import com.tamj.netflix.service.unogs.entity.TitleSearchResult;
 
 @Component
 public class NetflixSearchServiceImpl implements NetflixSearchService {
+
+	final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	private String url;
 	private String headerRapidApiKey;
@@ -29,6 +34,14 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 		this.url = props.getProperty("rapid.api.url");
 		this.headerRapidApiKey = props.getProperty("rapid.api.key");
 		this.headerRapidApiHost = props.getProperty("rapid.api.host");
+		
+		if (this.headerRapidApiKey == null || "".equals(this.headerRapidApiKey.trim())) {
+			this.headerRapidApiKey = AwsSecretMgrHelper.getSecret("prod/RapidApi", "rapid.api.key");
+			
+			logger.info("Rapid API Key retrieved from AWS Secret Manager");
+		} else {
+			logger.info("Rapid API Key retrieved from properties file");
+		}
 	}
 	
 	@Override
