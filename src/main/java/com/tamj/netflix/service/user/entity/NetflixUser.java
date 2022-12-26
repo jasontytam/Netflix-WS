@@ -1,5 +1,7 @@
 package com.tamj.netflix.service.user.entity;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ public class NetflixUser {
 //	   FIRSTNAME   VARCHAR(40)  NOT NULL,
 //	   LASTNAME    VARCHAR(40)  NOT NULL,
 //	   CONSTRAINT  PK_USER            PRIMARY KEY(USERID)
+//	   CONSTRAINT  UK_NETFLIX_USER_LOGIN  UNIQUE(LOGIN)
 //	);
 	
 	@Id
@@ -73,6 +76,24 @@ public class NetflixUser {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(firstName, id, lastName, login);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NetflixUser other = (NetflixUser) obj;
+		return Objects.equals(firstName, other.firstName) && id == other.id && Objects.equals(lastName, other.lastName)
+				&& Objects.equals(login, other.login);
 	}
 	
 	

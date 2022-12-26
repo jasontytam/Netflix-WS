@@ -1,5 +1,7 @@
 package com.tamj.netflix.service.fav.entity;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -78,5 +80,25 @@ public class FavMovie {
 	public void setTitleName(String titleName) {
 		this.titleName = titleName;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, netflixId, titleName, user);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FavMovie other = (FavMovie) obj;
+		return id == other.id && Objects.equals(netflixId, other.netflixId)
+				&& Objects.equals(titleName, other.titleName) && Objects.equals(user, other.user);
+	}
+	
+	
 	
 }

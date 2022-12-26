@@ -11,20 +11,23 @@ import javax.persistence.TypedQuery;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tamj.netflix.service.fav.entity.FavMovie;
 import com.tamj.netflix.service.user.entity.NetflixUser;
 
-@Component
 public class FavouriteServiceImpl implements FavouriteService {
 
 	final Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@PersistenceContext
 	private EntityManager entityMgr;
+	
+	@Override
+	public void setEntityManager(EntityManager em) {
+		this.entityMgr = em;
+	}
 
 
 	@Override
@@ -79,7 +82,7 @@ public class FavouriteServiceImpl implements FavouriteService {
 
 	@Override
 	@Transactional
-	public void removeFavourite(long userId, String netflixId) {
+	public boolean removeFavourite(long userId, String netflixId) {
 		TypedQuery<FavMovie> query = this.entityMgr.createQuery(
 				"select favmovie from FavMovie favmovie WHERE favmovie.user.id = :userid and favmovie.netflixId = :netflixid", FavMovie.class);
 		query.setParameter("userid", userId);
@@ -89,9 +92,11 @@ public class FavouriteServiceImpl implements FavouriteService {
 		
 		if (resultList == null || resultList.size() == 0) {
 			this.logger.error("FavMovie Not exist : {} + {}", userId, netflixId);
+			return false;
 		} else {
 			this.entityMgr.remove(resultList.get(0));
 			this.logger.info("FavMovie Deleted : {} + {}", userId, netflixId);
+			return true;
 		}
 	}
 

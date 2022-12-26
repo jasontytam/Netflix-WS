@@ -121,31 +121,44 @@ public class NetflixAppController {
 	}
 	
 	@PostMapping(value = "/movie/fav/add", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<FavMovie> addFavMovie(@RequestBody FavMovie favMovie) {
+	public ResponseEntity<?> addFavMovie(@RequestBody FavMovie favMovie) {
 		if (favMovie == null || favMovie.getUser() == null || favMovie.getNetflixId() == null || favMovie.getTitleName() == null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			this.logger.error("ADD with Incomplete Required Info (User ID / Netflix ID / Title Name) : {}", favMovie);
+			return new ResponseEntity<String>("Incomplete Required Info (User ID / Netflix ID / Title Name)", HttpStatus.BAD_REQUEST);
 		} else {
 			try {
 				FavMovie addedFavMovie = this.favSvc.addToFavourite(favMovie.getUser().getId(), favMovie.getNetflixId(), favMovie.getTitleName());
 				if (addedFavMovie != null && addedFavMovie.getId() != 0) {
 		//			ResponseEntity.accepted().body(addedFavMovie);
-					return new ResponseEntity<>(addedFavMovie, HttpStatus.CREATED);
+					return new ResponseEntity<FavMovie>(addedFavMovie, HttpStatus.CREATED);
 				} else {
-					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+					this.logger.error("FavMovie NOT added, returning [400 BAD REQUEST] : {}", favMovie);
+					return new ResponseEntity<String>("Favourte Movie NOT added, possibly data entry already existed", HttpStatus.BAD_REQUEST);
 				}
 			} catch (Exception e) {
-				this.logger.error("[{}] FavMovie add failed : {}", e.getClass().getCanonicalName(), favMovie);
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				this.logger.error("[{}] FavMovie add failed : {}", e.getClass().getCanonicalName(), favMovie, e);
+				return new ResponseEntity<String>("Unknown excpetion", HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 	}
 	
 	@DeleteMapping(value = "/movie/fav/remove", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void removeFavMovie(@RequestBody FavMovie favMovie) {
+	public ResponseEntity<?> removeFavMovie(@RequestBody FavMovie favMovie) {
 		if (favMovie == null || favMovie.getUser() == null || favMovie.getNetflixId() == null) {
-			this.logger.warn("DELETE with empty User / User ID / Netflix ID : {}", favMovie);
+			this.logger.error("DELETE with empty User / User ID / Netflix ID : {}", favMovie);
+			return new ResponseEntity<String>("Incomplete Required Info (User ID / Netflix ID)", HttpStatus.BAD_REQUEST);
 		} else {
-			this.favSvc.removeFavourite(favMovie.getUser().getId(), favMovie.getNetflixId());
+			try {
+				boolean result = this.favSvc.removeFavourite(favMovie.getUser().getId(), favMovie.getNetflixId());
+				if (result) {
+					return new ResponseEntity<>(HttpStatus.ACCEPTED);
+				} else {
+					return new ResponseEntity<String>("Record not found", HttpStatus.BAD_REQUEST);
+				}
+			} catch (Exception e) {
+				this.logger.error("[{}] FavMovie delete failed : {}", e.getClass().getCanonicalName(), favMovie, e);
+				return new ResponseEntity<String>("Unknown excpetion", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		}
 	}
 
