@@ -9,12 +9,11 @@ import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tamj.netflix.service.user.entity.NetflixUser;
 
-@Component
+
 public class UserServiceImpl implements UserService {
 	
 	final Logger logger = LoggerFactory.getLogger(getClass());
@@ -83,14 +82,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public void delete(NetflixUser user) {
+	public boolean delete(NetflixUser user) {
 		NetflixUser existingUser = this.entityMgr.find(NetflixUser.class, user.getId());
 		
 		if (existingUser == null) {
 			this.logger.error("User Not exist : {}", existingUser);
+			return false;
 		} else {
 			this.logger.info("User Deleted : {}", existingUser);
 			this.entityMgr.remove(existingUser);
+			return true;
 		}
 		
 	}

@@ -10,5 +10,5 @@ public interface UserService {
 	public List<NetflixUser> getAll();
 	public NetflixUser add(String login, String firstName, String lastName);
 	public NetflixUser update(NetflixUser user);
-	public void delete(NetflixUser user);
+	public boolean delete(NetflixUser user);
 }
