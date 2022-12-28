@@ -94,7 +94,7 @@ public class NetflixAppController {
 			NetflixUser updatedUser = this.userSvc.update(user);
 			if (updatedUser != null && updatedUser.getId() != 0) {
 	//			ResponseEntity.accepted().body(addedUser);
-				return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
+				return new ResponseEntity<>(updatedUser, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
@@ -151,7 +151,7 @@ public class NetflixAppController {
 			try {
 				boolean result = this.favSvc.removeFavourite(favMovie.getUser().getId(), favMovie.getNetflixId());
 				if (result) {
-					return new ResponseEntity<>(HttpStatus.ACCEPTED);
+					return new ResponseEntity<>(HttpStatus.OK);
 				} else {
 					return new ResponseEntity<String>("Record not found", HttpStatus.BAD_REQUEST);
 				}

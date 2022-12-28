@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,9 @@ import com.tamj.netflix.service.unogs.entity.TitleSearchResult;
 public class NetflixSearchServiceImpl implements NetflixSearchService {
 
 	final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	private String url;
 	private String headerRapidApiKey;
@@ -42,6 +46,7 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 		} else {
 			logger.info("Rapid API Key retrieved from properties file");
 		}
+
 	}
 	
 	@Override
@@ -58,14 +63,15 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 		headers.add("X-RapidAPI-Host", headerRapidApiHost);
 		
 		ResponseEntity<TitleDetail> responseEntity
-		  = new RestTemplate().exchange(
-				  url + "/title/details?netflix_id={neflix_id}", 
-				  HttpMethod.GET, 
-				  new HttpEntity<String>(headers), 
-				  TitleDetail.class, netflixId);
+			= this.restTemplate
+				.exchange(
+					url + "/title/details?netflix_id={neflix_id}", 
+					HttpMethod.GET, 
+					new HttpEntity<String>(headers), 
+					TitleDetail.class, 
+					netflixId
+				);
 		
-		System.out.println(responseEntity.getStatusCode());
-		System.out.println(responseEntity.getBody());
 
 		if (responseEntity.getStatusCode() == HttpStatus.OK) {
 			if (responseEntity.getBody().getTitle() == null || "".equals(responseEntity.getBody().getTitle())) {
@@ -92,15 +98,16 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 		headers.add("X-RapidAPI-Host", headerRapidApiHost);
 		
 		ResponseEntity<SearchResult> responseEntity
-		  = new RestTemplate().exchange(
-				  url + "/search/titles?order_by=date&title={titleName}&type=movie", 
-				  HttpMethod.GET, 
-				  new HttpEntity<String>(headers), 
-				  SearchResult.class, titleName);
+			= this.restTemplate
+				.exchange(
+					url + "/search/titles?order_by=date&title={titleName}&type=movie", 
+					HttpMethod.GET, 
+					new HttpEntity<String>(headers), 
+					SearchResult.class, 
+					titleName
+				);
 		
 		
-		System.out.println(responseEntity.getStatusCode());
-		System.out.println(responseEntity.getBody());
 
 		if (responseEntity.getStatusCode() == HttpStatus.OK) {
 			List<TitleSearchResult> resultList = responseEntity.getBody().getResults();
@@ -111,7 +118,6 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 						)
 					).toList();
 			}
-			System.out.println(resultList.size());
 			return resultList;
 		} else {
 			return null;
