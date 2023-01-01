@@ -4,8 +4,8 @@
       "appenders": {
          "RollingFile": {
             "name":"File",
-            "fileName":"./Netflix-App.log",
-            "filePattern":"./Netflix-App-backup-%d{yyyy-MM-dd_HH-mm-ss}-%i.log.gz",
+            "fileName":"./log/Netflix-App.log",
+            "filePattern":"./log/Netflix-App-backup-%d{yyyy-MM-dd_HH-mm-ss}-%i.log.gz",
             "PatternLayout": {
                "pattern":"%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"
             },
