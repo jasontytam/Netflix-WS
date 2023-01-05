@@ -20,7 +20,7 @@ public class AwsSecretMgrHelper {
 	// If you need more information about configurations or implementing the sample code, visit the AWS docs:
 	// https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-samples.html#prerequisites
 
-	public static String getSecret(String secretName, String secretKey) {
+	public String getSecret(String secretName, String secretKey) {
 
 //	    String secretName = "prod/RapidApi";
 	    Region region = Region.of("eu-west-2");

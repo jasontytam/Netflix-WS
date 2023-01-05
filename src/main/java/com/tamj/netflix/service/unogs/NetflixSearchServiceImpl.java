@@ -27,6 +27,9 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	private AwsSecretMgrHelper awsSecretHelper;
+	
 	private String url;
 	private String headerRapidApiKey;
 	private String headerRapidApiHost;
@@ -38,14 +41,19 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 		this.url = props.getProperty("rapid.api.url");
 		this.headerRapidApiKey = props.getProperty("rapid.api.key");
 		this.headerRapidApiHost = props.getProperty("rapid.api.host");
+	}
+	
+	private String getRapidApiKey() {
 		
 		if (this.headerRapidApiKey == null || "".equals(this.headerRapidApiKey.trim())) {
-			this.headerRapidApiKey = AwsSecretMgrHelper.getSecret("prod/RapidApi", "rapid.api.key");
+			this.headerRapidApiKey = awsSecretHelper.getSecret("prod/RapidApi", "rapid.api.key");
 			
 			logger.info("Rapid API Key retrieved from AWS Secret Manager");
 		} else {
 			logger.info("Rapid API Key retrieved from properties file");
 		}
+		
+		return this.headerRapidApiKey;
 
 	}
 	
@@ -59,7 +67,7 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 		HttpHeaders headers = new HttpHeaders();
 //		headers.add("content-type", MediaType.APPLICATION_JSON_VALUE);
 //		headers.add("accept", MediaType.APPLICATION_JSON_VALUE);
-		headers.add("X-RapidAPI-Key", headerRapidApiKey);
+		headers.add("X-RapidAPI-Key", this.getRapidApiKey());
 		headers.add("X-RapidAPI-Host", headerRapidApiHost);
 		
 		ResponseEntity<TitleDetail> responseEntity
@@ -94,7 +102,7 @@ public class NetflixSearchServiceImpl implements NetflixSearchService {
 		HttpHeaders headers = new HttpHeaders();
 //		headers.add("content-type", MediaType.APPLICATION_JSON_VALUE);
 //		headers.add("accept", MediaType.APPLICATION_JSON_VALUE);
-		headers.add("X-RapidAPI-Key", headerRapidApiKey);
+		headers.add("X-RapidAPI-Key", this.getRapidApiKey());
 		headers.add("X-RapidAPI-Host", headerRapidApiHost);
 		
 		ResponseEntity<SearchResult> responseEntity

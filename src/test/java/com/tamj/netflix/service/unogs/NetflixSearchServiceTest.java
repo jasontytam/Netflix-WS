@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,23 +27,21 @@ public class NetflixSearchServiceTest {
 	
 	@Mock
 	private RestTemplate restTemplate;
+	
+	@Mock
+	private AwsSecretMgrHelper awsHelper;
 
 	@InjectMocks
 	private NetflixSearchServiceImpl searchSvc;
 	
-	private HttpHeaders httpHeaders;
-	private String url;
-	
-	@BeforeEach
-	void init() {
-		String rapidApiKey = AwsSecretMgrHelper.getSecret("prod/RapidApi", "rapid.api.key");
-		
-		this.httpHeaders = new HttpHeaders();
-		this.httpHeaders.add("X-RapidAPI-Key", rapidApiKey);
-		this.httpHeaders.add("X-RapidAPI-Host", "unogs-unogs-v1.p.rapidapi.com");
-		
-		this.url = "https://unogs-unogs-v1.p.rapidapi.com";
-	}
+//	private HttpHeaders httpHeaders;
+	private String awsSecretName = "prod/RapidApi";
+	private String awsSecretKey = "rapid.api.key";
+	private String headerApiKeyName = "X-RapidAPI-Key";
+	private String headerApiHostName = "X-RapidAPI-Host";
+	private String mockedApiKeyValue = "abcabc";
+	private String apiHost = "unogs-unogs-v1.p.rapidapi.com";
+	private String url = "https://unogs-unogs-v1.p.rapidapi.com";
 	 
 	@Test
 	void testContext() {
@@ -62,11 +59,20 @@ public class NetflixSearchServiceTest {
 		
 		ResponseEntity<TitleDetail> expResultEntity = new ResponseEntity<TitleDetail>(titleDetailResult, HttpStatus.OK);
 		
+//		MockedStatic<AwsSecretMgrHelper> mockedHelper = Mockito.mockStatic(AwsSecretMgrHelper.class);
+//		mockedHelper.when(() -> AwsSecretMgrHelper.getSecret(this.awsSecretName, this.awsSecretKey)).thenReturn(this.mockedApiKeyValue);
+		
+		Mockito.when(this.awsHelper.getSecret(this.awsSecretName, this.awsSecretKey)).thenReturn(this.mockedApiKeyValue);
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add(this.headerApiKeyName, this.mockedApiKeyValue);
+		httpHeaders.add(this.headerApiHostName, this.apiHost);
+
 		Mockito.when(this.restTemplate
 					.exchange(
 						url + "/title/details?netflix_id={neflix_id}", 
 						HttpMethod.GET, 
-						new HttpEntity<String>(this.httpHeaders), 
+						new HttpEntity<String>(httpHeaders), 
 						TitleDetail.class, netflixId)
 					)
 				.thenReturn(expResultEntity);
@@ -75,11 +81,13 @@ public class NetflixSearchServiceTest {
 		
 		Assertions.assertEquals(titleDetailResult, actualTitleDetail);
 		
+		Mockito.verify(this.awsHelper).getSecret(this.awsSecretName, this.awsSecretKey);
+		
 		Mockito.verify(this.restTemplate)
 				.exchange(
 					url + "/title/details?netflix_id={neflix_id}", 
 					HttpMethod.GET, 
-					new HttpEntity<String>(this.httpHeaders), 
+					new HttpEntity<String>(httpHeaders), 
 					TitleDetail.class, netflixId
 				);
 	}
@@ -90,11 +98,17 @@ public class NetflixSearchServiceTest {
 		
 		ResponseEntity<TitleDetail> expResultEntity = new ResponseEntity<TitleDetail>(HttpStatus.UNAUTHORIZED);
 		
+		Mockito.when(this.awsHelper.getSecret(this.awsSecretName, this.awsSecretKey)).thenReturn(this.mockedApiKeyValue);
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add(this.headerApiKeyName, this.mockedApiKeyValue);
+		httpHeaders.add(this.headerApiHostName, this.apiHost);
+		
 		Mockito.when(this.restTemplate
 					.exchange(
 						url + "/title/details?netflix_id={neflix_id}", 
 						HttpMethod.GET, 
-						new HttpEntity<String>(this.httpHeaders), 
+						new HttpEntity<String>(httpHeaders), 
 						TitleDetail.class, netflixId)
 					)
 				.thenReturn(expResultEntity);
@@ -107,7 +121,7 @@ public class NetflixSearchServiceTest {
 				.exchange(
 					url + "/title/details?netflix_id={neflix_id}", 
 					HttpMethod.GET, 
-					new HttpEntity<String>(this.httpHeaders), 
+					new HttpEntity<String>(httpHeaders), 
 					TitleDetail.class, netflixId
 				);
 	}
@@ -129,11 +143,17 @@ public class NetflixSearchServiceTest {
 		
 		ResponseEntity<SearchResult> expResultEntity = new ResponseEntity<SearchResult>(searchResult, HttpStatus.OK);
 		
+		Mockito.when(this.awsHelper.getSecret(this.awsSecretName, this.awsSecretKey)).thenReturn(this.mockedApiKeyValue);
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add(this.headerApiKeyName, this.mockedApiKeyValue);
+		httpHeaders.add(this.headerApiHostName, this.apiHost);
+		
 		Mockito.when(this.restTemplate
 					.exchange(
 						url + "/search/titles?order_by=date&title={titleName}&type=movie", 
 						HttpMethod.GET, 
-						new HttpEntity<String>(this.httpHeaders), 
+						new HttpEntity<String>(httpHeaders), 
 						SearchResult.class, titleName)
 					)
 				.thenReturn(expResultEntity);
@@ -146,7 +166,7 @@ public class NetflixSearchServiceTest {
 				.exchange(
 					url + "/search/titles?order_by=date&title={titleName}&type=movie", 
 					HttpMethod.GET, 
-					new HttpEntity<String>(this.httpHeaders), 
+					new HttpEntity<String>(httpHeaders), 
 					SearchResult.class, titleName
 				);
 
@@ -169,11 +189,17 @@ public class NetflixSearchServiceTest {
 		
 		ResponseEntity<SearchResult> expResultEntity = new ResponseEntity<SearchResult>(HttpStatus.UNAUTHORIZED);
 		
+		Mockito.when(this.awsHelper.getSecret(this.awsSecretName, this.awsSecretKey)).thenReturn(this.mockedApiKeyValue);
+		
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add(this.headerApiKeyName, this.mockedApiKeyValue);
+		httpHeaders.add(this.headerApiHostName, this.apiHost);
+		
 		Mockito.when(this.restTemplate
 					.exchange(
 						url + "/search/titles?order_by=date&title={titleName}&type=movie", 
 						HttpMethod.GET, 
-						new HttpEntity<String>(this.httpHeaders), 
+						new HttpEntity<String>(httpHeaders), 
 						SearchResult.class, titleName)
 					)
 				.thenReturn(expResultEntity);
@@ -186,7 +212,7 @@ public class NetflixSearchServiceTest {
 				.exchange(
 					url + "/search/titles?order_by=date&title={titleName}&type=movie", 
 					HttpMethod.GET, 
-					new HttpEntity<String>(this.httpHeaders), 
+					new HttpEntity<String>(httpHeaders), 
 					SearchResult.class, titleName
 				);
 
