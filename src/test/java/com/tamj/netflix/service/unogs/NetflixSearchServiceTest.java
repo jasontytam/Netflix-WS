@@ -6,10 +6,11 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -22,7 +23,7 @@ import com.tamj.netflix.service.unogs.entity.SearchResult;
 import com.tamj.netflix.service.unogs.entity.TitleDetail;
 import com.tamj.netflix.service.unogs.entity.TitleSearchResult;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class NetflixSearchServiceTest {
 	
 	@Mock
