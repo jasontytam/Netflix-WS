@@ -15,7 +15,7 @@ on:
 
 env:
   AWS_REGION: eu-west-2
-  S3BUCKET: arn:aws:s3:::tamj-netflix-ws-deploy
+  S3BUCKET: tamj-netflix-ws-deploy
 
 permissions:
   contents: read
