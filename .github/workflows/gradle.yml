@@ -50,3 +50,23 @@ jobs:
     - name: Upload Artifact to s3
       working-directory: build/libs
       run: aws s3 cp Netflix-App-*-SNAPSHOT.jar s3://${{ env.S3BUCKET }}/
+
+        
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
+        role-session-name: GitHub-Action-Role
+        aws-region: ${{ env.AWS_REGION }}
+
+    - run: |
+        echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
+        commit_hash=`git rev-parse HEAD`
+        aws deploy create-deployment --application-name Netflix-WS --deployment-group-name Netflix-WS-DeploymentGroup --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
+
