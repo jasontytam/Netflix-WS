@@ -1,31 +1,44 @@
 {
-   "configuration": {
-      "name": "Default",
-      "appenders": {
-         "RollingFile": {
-            "name":"File",
-            "fileName":"./log/Netflix-App.log",
-            "filePattern":"./log/Netflix-App-backup-%d{yyyy-MM-dd_HH-mm-ss}-%i.log.gz",
-            "PatternLayout": {
-               "pattern":"%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n"
-            },
-            "Policies": {
-               "SizeBasedTriggeringPolicy": {
-                  "size":"10 MB"
-               }
-            },
-            "DefaultRolloverStrategy": {
-               "max":"10"
-            }
-         }
-      },
-      "loggers": {
-         "root": {
-            "level":"debug",
-            "appender-ref": {
-              "ref":"File"
-            }
-         }
-      }
-   }
+	"configuration": {
+		
+		"name": "Default",
+		
+		"appenders": {
+			
+			"RollingFile": {
+				"name": "RollingFileAppender",
+				"fileName": "./log/Netflix-App.log",
+				"filePattern": "./log/Netflix-App-backup-%d{yyyy-MM-dd}-%i.log.gz",
+				"PatternLayout": {
+					"pattern": "%d [%t] %-5p %c{1}:%L - %m%n"
+				},
+				"Policies": {
+					"OnStartupTriggeringPolicy": {
+					},
+					"SizeBasedTriggeringPolicy": {
+						"size": "10 MB"
+					},
+					"TimeBasedTriggeringPolicy": {
+					}
+				},
+				"DefaultRolloverStrategy": {
+					"max": "20"
+				}
+			}
+			
+		},
+		
+		"loggers": {
+			
+			"root": {
+				"level": "info",
+				"AppenderRef": [
+					{
+						"ref": "RollingFileAppender"
+					}
+				]
+			}
+			
+		}
+	}
 }
