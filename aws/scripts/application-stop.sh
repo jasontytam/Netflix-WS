@@ -2,12 +2,13 @@
 set -x
 
 
-SLEEP_TIME=3
+SLEEP_TIME=10
 
 PID=`ps axf |grep Netflix-App |grep java | grep -o '^[ ]*[0-9]*' |xargs`
 if [ ! -z "$PID" ]; then
   echo "Process is running (pid: $PID). Issuing kill..."
-  pkill -9 -f Netflix-App
+  #pkill -9 -f Netflix-App
+  kill $PID
   sleep $SLEEP_TIME
   exit 0
 else
